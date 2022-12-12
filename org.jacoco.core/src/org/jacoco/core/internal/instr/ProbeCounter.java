@@ -15,6 +15,8 @@ package org.jacoco.core.internal.instr;
 import org.jacoco.core.internal.flow.ClassProbesVisitor;
 import org.jacoco.core.internal.flow.MethodProbesVisitor;
 import org.objectweb.asm.Opcodes;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Internal class to remember the total number of probes required for a class.
@@ -24,9 +26,15 @@ class ProbeCounter extends ClassProbesVisitor {
 	private int count;
 	private boolean methods;
 
+	private Map funcHashCounterMap;
+	private Map funcHashMap;
+
+
 	ProbeCounter() {
 		count = 0;
 		methods = false;
+		funcHashCounterMap = new HashMap<Long,Integer>();
+		funcHashMap =  new HashMap<String , Long>();
 	}
 
 	@Override
@@ -41,12 +49,21 @@ class ProbeCounter extends ClassProbesVisitor {
 	}
 
 	@Override
-	public void visitTotalProbeCount(final int count) {
+	public void visitTotalProbeCount(final int count,final Map funcHashCounterMap , final Map funcHashMap) {
 		this.count = count;
+		this.funcHashCounterMap = funcHashCounterMap ;
+		this.funcHashMap = funcHashMap;
 	}
 
 	int getCount() {
 		return count;
+	}
+
+	Map getFuncHashCounterMap(){
+		return funcHashCounterMap;
+	}
+	Map getFuncHashMap(){
+		return funcHashMap;
 	}
 
 	/**

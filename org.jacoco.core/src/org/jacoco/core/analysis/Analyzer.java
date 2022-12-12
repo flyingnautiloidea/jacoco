@@ -99,7 +99,7 @@ public class Analyzer {
 				coverageVisitor.visitCoverage(coverage);
 			}
 		};
-		return new ClassProbesAdapter(analyzer, false);
+		return new ClassProbesAdapter(analyzer, false , null);
 	}
 
 	private void analyzeClass(final byte[] source) {

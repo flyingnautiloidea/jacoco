@@ -22,6 +22,6 @@ public interface IProbeIdGenerator {
 	 *
 	 * @return unique probe id
 	 */
-	int nextId();
+	int nextId(Long funcHash);
 
 }

@@ -14,6 +14,7 @@ package org.jacoco.core.internal.instr;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
+import java.util.Map;
 
 /**
  * The strategy does not emit any code at all. This is used for interface types
@@ -22,11 +23,11 @@ import org.objectweb.asm.MethodVisitor;
 class NoneProbeArrayStrategy implements IProbeArrayStrategy {
 
 	public int storeInstance(final MethodVisitor mv, final boolean clinit,
-			final int variable) {
+			final int variable , final Long funcHash) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void addMembers(final ClassVisitor delegate, final int probeCount) {
+	public void addMembers(final ClassVisitor delegate, final int probeCount , final Map funcHashCounterMap , final Map funcHashMap) {
 		// nothing to do
 	}
 

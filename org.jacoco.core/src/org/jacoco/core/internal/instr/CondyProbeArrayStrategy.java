@@ -19,6 +19,8 @@ import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import java.util.Map ;
+
 /**
  * This strategy for Java 11+ class files uses {@link ConstantDynamic} to hold
  * the probe array and adds bootstrap method requesting the probe array from the
@@ -49,7 +51,7 @@ public class CondyProbeArrayStrategy implements IProbeArrayStrategy {
 	}
 
 	public int storeInstance(final MethodVisitor mv, final boolean clinit,
-			final int variable) {
+			final int variable , final Long funcHash) {
 		final Handle bootstrapMethod = new Handle(Opcodes.H_INVOKESTATIC,
 				className, InstrSupport.INITMETHOD_NAME, B_DESC, isInterface);
 		// As a workaround for https://bugs.openjdk.java.net/browse/JDK-8216970
@@ -61,7 +63,7 @@ public class CondyProbeArrayStrategy implements IProbeArrayStrategy {
 		return 1;
 	}
 
-	public void addMembers(final ClassVisitor cv, final int probeCount) {
+	public void addMembers(final ClassVisitor cv, final int probeCount , final Map funcHashCounterMap , final Map funcHashMap) {
 		final MethodVisitor mv = cv.visitMethod(InstrSupport.INITMETHOD_ACC,
 				InstrSupport.INITMETHOD_NAME, B_DESC, null, null);
 		final int maxStack = accessorGenerator.generateDataAccessor(classId,

@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.jacoco.core.diffhelper.DiffHelper;
 
 import org.jacoco.cli.internal.Command;
 import org.jacoco.core.analysis.Analyzer;
@@ -51,6 +52,9 @@ public class Report extends Command {
 	@Option(name = "--classfiles", usage = "location of Java class files", metaVar = "<path>", required = true)
 	List<File> classfiles = new ArrayList<File>();
 
+	@Option(name = "--diffFile", usage = "input file for diff", metaVar =  "<file>")
+	String diffFile;
+
 	@Option(name = "--sourcefiles", usage = "location of the source files", metaVar = "<path>")
 	List<File> sourcefiles = new ArrayList<File>();
 
@@ -80,6 +84,13 @@ public class Report extends Command {
 	@Override
 	public int execute(final PrintWriter out, final PrintWriter err)
 			throws IOException {
+		try {
+			if (this.diffFile != null) {
+				DiffHelper.modify("diffFilePath", this.diffFile);
+				DiffHelper diffHelper = new DiffHelper();
+			}
+		} catch (Exception e) {e.printStackTrace();}
+
 		final ExecFileLoader loader = loadExecutionData(out);
 		final IBundleCoverage bundle = analyze(loader.getExecutionDataStore(),
 				out);
@@ -94,6 +105,9 @@ public class Report extends Command {
 			out.println("[WARN] No execution data files provided.");
 		} else {
 			for (final File file : execfiles) {
+				if (!file.getName (). contains (". exec")) {
+					continue;
+				}
 				out.printf("[INFO] Loading execution data file %s.%n",
 						file.getAbsolutePath());
 				loader.load(file);

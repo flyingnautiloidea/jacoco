@@ -34,6 +34,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 	private AnalyzerAdapter analyzer;
 
 	private final Map<Label, Label> tryCatchProbeLabels;
+	private final Long funcHash ;
 
 	/**
 	 * Create a new adapter instance.
@@ -44,11 +45,12 @@ public final class MethodProbesAdapter extends MethodVisitor {
 	 *            generator for unique probe ids
 	 */
 	public MethodProbesAdapter(final MethodProbesVisitor probesVisitor,
-			final IProbeIdGenerator idGenerator) {
+			final IProbeIdGenerator idGenerator , final Long funcHash) {
 		super(InstrSupport.ASM_API_VERSION, probesVisitor);
 		this.probesVisitor = probesVisitor;
 		this.idGenerator = idGenerator;
 		this.tryCatchProbeLabels = new HashMap<Label, Label>();
+		this.funcHash = funcHash;
 	}
 
 	/**
@@ -89,7 +91,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 			if (tryCatchProbeLabels.containsKey(label)) {
 				probesVisitor.visitLabel(tryCatchProbeLabels.get(label));
 			}
-			probesVisitor.visitProbe(idGenerator.nextId());
+			probesVisitor.visitProbe(idGenerator.nextId(funcHash));
 		}
 		probesVisitor.visitLabel(label);
 	}
@@ -104,7 +106,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 		case Opcodes.ARETURN:
 		case Opcodes.RETURN:
 		case Opcodes.ATHROW:
-			probesVisitor.visitInsnWithProbe(opcode, idGenerator.nextId());
+			probesVisitor.visitInsnWithProbe(opcode, idGenerator.nextId(funcHash));
 			break;
 		default:
 			probesVisitor.visitInsn(opcode);
@@ -116,7 +118,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 	public void visitJumpInsn(final int opcode, final Label label) {
 		if (LabelInfo.isMultiTarget(label)) {
 			probesVisitor.visitJumpInsnWithProbe(opcode, label,
-					idGenerator.nextId(), frame(jumpPopCount(opcode)));
+					idGenerator.nextId(funcHash), frame(jumpPopCount(opcode)));
 		} else {
 			probesVisitor.visitJumpInsn(opcode, label);
 		}
@@ -166,13 +168,13 @@ public final class MethodProbesAdapter extends MethodVisitor {
 		boolean probe = false;
 		LabelInfo.resetDone(labels);
 		if (LabelInfo.isMultiTarget(dflt)) {
-			LabelInfo.setProbeId(dflt, idGenerator.nextId());
+			LabelInfo.setProbeId(dflt, idGenerator.nextId(funcHash));
 			probe = true;
 		}
 		LabelInfo.setDone(dflt);
 		for (final Label l : labels) {
 			if (LabelInfo.isMultiTarget(l) && !LabelInfo.isDone(l)) {
-				LabelInfo.setProbeId(l, idGenerator.nextId());
+				LabelInfo.setProbeId(l, idGenerator.nextId(funcHash));
 				probe = true;
 			}
 			LabelInfo.setDone(l);

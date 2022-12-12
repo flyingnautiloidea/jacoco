@@ -16,6 +16,8 @@ import org.jacoco.core.internal.flow.ClassProbesAdapter;
 import org.jacoco.core.runtime.IExecutionDataAccessorGenerator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import org.jacoco.core. tools. javaByteFunctionMap;
+import java.util.Map;
 
 /**
  * Factory to find a suitable strategy to access the probe array for a given
@@ -41,14 +43,14 @@ public final class ProbeArrayStrategyFactory {
 	 */
 	public static IProbeArrayStrategy createFor(final long classId,
 			final ClassReader reader,
-			final IExecutionDataAccessorGenerator accessorGenerator) {
+			final IExecutionDataAccessorGenerator accessorGenerator,final Map funcHashMap) {
 
 		final String className = reader.getClassName();
 		final int version = InstrSupport.getMajorVersion(reader);
-
+		javaByteFunctionMap jbm = new javaByteFunctionMap() ;
 		if (isInterfaceOrModule(reader)) {
-			final ProbeCounter counter = getProbeCounter(reader);
-			if (counter.getCount() == 0) {
+			final ProbeCounter counter = getProbeCounter(reader,funcHashMap);
+			if (jbm.allMethodCounterNotAllZero(counter.getFuncHashCounterMap())==false) {
 				return new NoneProbeArrayStrategy();
 			}
 			if (version >= Opcodes.V11 && counter.hasMethods()) {
@@ -60,7 +62,7 @@ public final class ProbeArrayStrategyFactory {
 						counter.getCount(), accessorGenerator);
 			} else {
 				return new LocalProbeArrayStrategy(className, classId,
-						counter.getCount(), accessorGenerator);
+						counter.getCount(), accessorGenerator,counter.getFuncHashMap(),counter.getFuncHashCounterMap());
 			}
 		} else {
 			if (version >= Opcodes.V11) {
@@ -77,9 +79,9 @@ public final class ProbeArrayStrategyFactory {
 				& (Opcodes.ACC_INTERFACE | Opcodes.ACC_MODULE)) != 0;
 	}
 
-	private static ProbeCounter getProbeCounter(final ClassReader reader) {
+	private static ProbeCounter getProbeCounter(final ClassReader reader,final Map funcHashMap) {
 		final ProbeCounter counter = new ProbeCounter();
-		reader.accept(new ClassProbesAdapter(counter, false), 0);
+		reader.accept(new ClassProbesAdapter(counter, false, funcHashMap),0);
 		return counter;
 	}
 

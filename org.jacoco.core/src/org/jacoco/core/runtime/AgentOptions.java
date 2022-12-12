@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import org.jacoco.core.diffhelper.fileOperator;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Utility to create and parse options for the runtime agent. Options are
@@ -58,6 +60,7 @@ public final class AgentOptions {
 	 * @see WildcardMatcher
 	 */
 	public static final String INCLUDES = "includes";
+	public static final String INCLUDESFILEPATH = "includesfilepath";
 
 	/**
 	 * Wildcard expression for class names that should be excluded from code
@@ -190,7 +193,7 @@ public final class AgentOptions {
 	public static final String JMX = "jmx";
 
 	private static final Collection<String> VALID_OPTIONS = Arrays.asList(
-			DESTFILE, APPEND, INCLUDES, EXCLUDES, EXCLCLASSLOADER,
+			DESTFILE, APPEND, INCLUDES, INCLUDESFILEPATH, EXCLUDES, EXCLCLASSLOADER,
 			INCLBOOTSTRAPCLASSES, INCLNOLOCATIONCLASSES, SESSIONID, DUMPONEXIT,
 			OUTPUT, ADDRESS, PORT, CLASSDUMPDIR, JMX);
 
@@ -228,6 +231,11 @@ public final class AgentOptions {
 				setOption(key, value);
 			}
 
+			fileOperator fo = new fileOperator();
+			String newIncludes = fo.includesString(options);
+			if (newIncludes != null){
+				setOption("includes", newIncludes);
+			}
 			validateAll();
 		}
 	}
@@ -315,9 +323,20 @@ public final class AgentOptions {
 	 * @see WildcardMatcher
 	 */
 	public void setIncludes(final String includes) {
-		setOption(INCLUDES, includes);
+
+		String newIncludes = includes ;
+		setOption(INCLUDES, newIncludes);
+
 	}
 
+	public String getIncludesFilePath(){
+			return getOption(INCLUDESFILEPATH,
+"");
+	}
+	public void setIncludesFilepath(final String includesFilepath)
+			throws Exception {
+		setOption(INCLUDESFILEPATH, includesFilepath);
+	}
 	/**
 	 * Returns the wildcard expression for classes to exclude.
 	 *

@@ -14,6 +14,7 @@ package org.jacoco.core.internal.flow;
 
 import org.jacoco.core.internal.instr.InstrSupport;
 import org.objectweb.asm.ClassVisitor;
+import java.util.Map;
 
 /**
  * A {@link ClassVisitor} with additional methods to get probe insertion
@@ -55,6 +56,6 @@ public abstract class ClassProbesVisitor extends ClassVisitor {
 	 * @param count
 	 *            total number of probes
 	 */
-	public abstract void visitTotalProbeCount(int count);
+	public abstract void visitTotalProbeCount(int count , Map funcHashCounterMap , Map funcHashMap);
 
 }

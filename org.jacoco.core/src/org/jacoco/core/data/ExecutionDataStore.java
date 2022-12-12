@@ -11,7 +11,9 @@
  *
  *******************************************************************************/
 package org.jacoco.core.data;
-
+import org.jacoco.core. tools.javaByteFunctionMap;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -167,7 +169,9 @@ public final class ExecutionDataStore implements IExecutionDataVisitor {
 	 *            interface to write content to
 	 */
 	public void accept(final IExecutionDataVisitor visitor) {
-		for (final ExecutionData data : getContents()) {
+		javaByteFunctionMap jbfm = new javaByteFunctionMap();
+		Collection<ExecutionData> afterClassHitsFilter = jbfm.filterValidClassExec(getContents());
+		for (final ExecutionData data : afterClassHitsFilter){
 			visitor.visitClassExecution(data);
 		}
 	}

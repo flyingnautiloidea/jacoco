@@ -79,6 +79,8 @@ public final class InstrSupport {
 	 * <code>boolean[]</code>).
 	 */
 	public static final String DATAFIELD_DESC = "[Z";
+	public static final String DATAFIELD_MAP_DESC= "Ljava/util/HashMap;";
+	public static final String DATAFIELD_MAP_ClassName = "java/util/HashMap";
 
 	// === Init Method ===
 
@@ -86,11 +88,13 @@ public final class InstrSupport {
 	 * Name of the initialization method.
 	 */
 	public static final String INITMETHOD_NAME = "$jacocoInit";
-
+	public static final String INITMETHOD_NAME_QUERYMAP="$jacocoQueryMap";
 	/**
 	 * Descriptor of the initialization method.
 	 */
-	public static final String INITMETHOD_DESC = "()[Z";
+//	public static final String INITMETHOD_DESC = "()[Z";
+	public static final String INITMETHOD_DESC="()Ljava/util/HashMap;";
+	public static final String INITMETHOD_DESC_QUERYMAP="(Ljava/Lang/Long;)[Z";
 
 	/**
 	 * Access modifiers of the initialization method.

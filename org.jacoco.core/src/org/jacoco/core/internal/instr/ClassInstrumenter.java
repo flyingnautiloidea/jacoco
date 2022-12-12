@@ -14,10 +14,14 @@ package org.jacoco.core.internal.instr;
 
 import org.jacoco.core.internal.flow.ClassProbesVisitor;
 import org.jacoco.core.internal.flow.MethodProbesVisitor;
+import org.jacoco.core.tools.javaByteFunctionMap;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Map;
 /**
  * Adapter that instruments a class for coverage tracing.
  */
@@ -26,6 +30,8 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 	private final IProbeArrayStrategy probeArrayStrategy;
 
 	private String className;
+	private final Map<String,Long> funcHashMap ;
+	javaByteFunctionMap jbf = new javaByteFunctionMap();
 
 	/**
 	 * Emits a instrumented version of this class to the given class visitor.
@@ -37,9 +43,10 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 	 *            instrumented class
 	 */
 	public ClassInstrumenter(final IProbeArrayStrategy probeArrayStrategy,
-			final ClassVisitor cv) {
+			final ClassVisitor cv , final Map funcHashMap) {
 		super(cv);
 		this.probeArrayStrategy = probeArrayStrategy;
+		this.funcHashMap = funcHashMap ;
 	}
 
 	@Override
@@ -66,20 +73,28 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 
 		final MethodVisitor mv = cv.visitMethod(access, name, desc, signature,
 				exceptions);
+		String funcHashkey = jbf.keyBuilderForQuery(className, name, desc);
+		Long funcHash = funcHashMap. get (funcHashkey);
+		if (funcHash == null) {
+			System.out.println(" (((((((((((classname:" + className +
+					"))))))))))))methodName::::"
+							+ name + "(((((((key:"
+							+ funcHashkey + "((((((hash:" + funcHash);
+		}
 
 		if (mv == null) {
 			return null;
 		}
 		final MethodVisitor frameEliminator = new DuplicateFrameEliminator(mv);
 		final ProbeInserter probeVariableInserter = new ProbeInserter(access,
-				name, desc, frameEliminator, probeArrayStrategy);
+				name, desc, frameEliminator, probeArrayStrategy,funcHash);
 		return new MethodInstrumenter(probeVariableInserter,
-				probeVariableInserter);
+				probeVariableInserter,funcHash);
 	}
 
 	@Override
-	public void visitTotalProbeCount(final int count) {
-		probeArrayStrategy.addMembers(cv, count);
+	public void visitTotalProbeCount(final int count , final Map funcHashCounterMap , final Map funcHashMap) {
+		probeArrayStrategy.addMembers(cv, count,funcHashCounterMap ,funcHashMap);
 	}
 
 }
