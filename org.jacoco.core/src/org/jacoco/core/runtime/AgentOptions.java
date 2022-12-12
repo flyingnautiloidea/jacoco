@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
-import org.jacoco.core.diffhelper.fileOperator;
-import java.nio.charset.StandardCharsets;
+import org.jacoco.core.diffTools.ClassFileOpt;
 
 /**
  * Utility to create and parse options for the runtime agent. Options are
@@ -231,7 +230,7 @@ public final class AgentOptions {
 				setOption(key, value);
 			}
 
-			fileOperator fo = new fileOperator();
+			ClassFileOpt fo = new ClassFileOpt();
 			String newIncludes = fo.includesString(options);
 			if (newIncludes != null){
 				setOption("includes", newIncludes);

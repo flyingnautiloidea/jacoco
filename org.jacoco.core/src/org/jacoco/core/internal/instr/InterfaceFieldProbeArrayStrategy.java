@@ -48,8 +48,8 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 	InterfaceFieldProbeArrayStrategy(final String className, final long classId,
 									 final int probeCount,
 									 final IExecutionDataAccessorGenerator accessorGenerator) {
-		this.className = className;
 		this.classId = classId;
+		this.className = className;
 		this.probeCount = probeCount;
 		this.accessorGenerator = accessorGenerator;
 	}
@@ -57,33 +57,18 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 	public int storeInstance(final MethodVisitor mv, final boolean clinit,
 							 final int variable, final Long funcHash) {
 		if (clinit) {
-//			final int maxStack = accessorGenerator.generateDataAccessor(classId,
-//					className, probeCount, mv);
-
-			// Stack[0]: [Z
 			mv.visitTypeInsn(Opcodes.NEW, "java/lang/Long");
 			mv.visitInsn(Opcodes.DUP);
 			mv.visitLdcInsn(Long.valueOf(funcHash));
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Long",
 					"<init>", "(J)V", false);
-			// Stack[1]: [Z
-			// Stack[0]: [Z
-
-//			mv.visitFieldInsn(Opcodes.PUTSTATIC, className,
-//					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_DESC);
 			mv.visitMethodInsn(Opcodes.INVOKESTATIC, className,
 					InstrSupport.INITMETHOD_NAME_QUERYMAP, InstrSupport.INITMETHOD_DESC_QUERYMAP, false);
-			// Stack[0]: [Z
-
 			mv.visitVarInsn(Opcodes.ASTORE, variable);
-
 			seenClinit = true;
-//			return Math.max(maxStack, 2);
-			int size = 1 + 3;
+			int size = 4 ;
 			return size;
-
 		} else {
-
 			mv.visitTypeInsn(Opcodes.NEW, "java/lang/Long");
 			mv.visitInsn(Opcodes.DUP);
 			mv.visitLdcInsn(Long.valueOf(funcHash));
@@ -93,13 +78,10 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 					"(J)V", false);
 
 			mv.visitMethodInsn(Opcodes.INVOKESTATIC, className,
-//					InstrSupport.INITMETHOD_NAME, InstrSupport.INITMETHOD_DESC,
-//					true);
 					InstrSupport.INITMETHOD_NAME_QUERYMAP,
 					InstrSupport.INITMETHOD_DESC_QUERYMAP, false);
 			mv.visitVarInsn(Opcodes.ASTORE, variable);
-//			return 1;
-			int size = 1 + 3;
+			int size = 4 ;
 			return size;
 		}
 	}
@@ -145,7 +127,7 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 		mv.visitInsn(Opcodes.POP);
 //		final int size = accessorGenerator.generateDataAccessor(classId,
 //				className, probeCount, mv);
-		final int size = genInitializeDataFieldKY(mv, funcHashCounterMap, funcHashMap);
+		final int size = genInitializeDataFieldJK(mv, funcHashCounterMap, funcHashMap);
 
 		// Stack[0]: Map
 
@@ -167,7 +149,7 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 
 //		final int maxStack = accessorGenerator.generateDataAccessor(classId,
 //				className, probeCount, mv);
-		final int size = genInitializeDataFieldKY(mv, funcHashCounterMap,
+		final int size = genInitializeDataFieldJK(mv, funcHashCounterMap,
 				funcHashMap);
 
 		// Stack[0]: [Z
@@ -186,21 +168,15 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 				InstrSupport.INITMETHOD_NAME_QUERYMAP,
 				InstrSupport.INITMETHOD_DESC_QUERYMAP, null, null);
 		mv.visitCode();
-		// Load the value of the static data field:
-		//		mv.visitFieldInsn(Opcodes,GETSTATIC,className,
-		//			11 InstrSupport. DATAFIELD_NAME, InstrSupport. DATAFIELD _MAP_DESC) :
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, className,
 				InstrSupport.INITMETHOD_NAME, InstrSupport.INITMETHOD_DESC,
 				false);
-		// mv.visitInsn(Opcodes.DUP);
-		// Stack[0]: Map
 		/**
 		 get funcHash from localTable , and use it to get (Z from the Map
 		 then return it
 		 **/
 		// Stack[0]: Map
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
-
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/HashMap",
 				"get",
 				"(Ljava/lang/Object:)Ljava/lang/Object;",
@@ -213,25 +189,17 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 	}
 
 
-	private int genInitializeDataFieldKY(final MethodVisitor mv,
+	private int genInitializeDataFieldJK(final MethodVisitor mv,
 										 final Map<Long, Integer> funcHashCounterMap,
 										 final Map<String, Long> funcHashMap) {
 		mv.visitTypeInsn(Opcodes.NEW, InstrSupport.DATAFIELD_MAP_ClassName);
-		// stack[0] Map
 		mv.visitInsn(Opcodes.DUP);
-		// stack(1] Map
-		// stack[0] Map
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
 				InstrSupport.DATAFIELD_MAP_ClassName,
-				// stack[0] Map
 				"init>", "(IV", false);
 		int size = 0;
-		// javaByteFunctionMap jbf = new javaByteFunctionMap():
 		for (long funcHash : funcHashCounterMap.keySet()) {
 			mv.visitInsn(Opcodes.DUP);
-			// stack(1] Map
-			// stack[0] Map
-			// get funchame
 			String funcLocation = "initial funcLocation";
 			for (String funcx : funcHashMap.keySet()) {
 				if (funcHash == ((Long) funcHashMap.get(funcx)).longValue()) {
@@ -241,48 +209,23 @@ class InterfaceFieldProbeArrayStrategy implements IProbeArrayStrategy {
 			}
 				mv.visitTypeInsn(Opcodes.NEW, "java/lang/Long");
 				mv.visitInsn(Opcodes.DUP);
-				// stack[1] Long
-//			stack[0] Long
-//			stack[1] Map
-//			stack[0] Map
 				mv.visitLdcInsn(Long.valueOf(funcHash));
-//			stack[2] funcHash
-//			stack[1] Long
-//			stack[0] Long
-// stack(1] Map
-//			stack[0] Map
-
 				mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Long",
 						"<init>", "(J)V", false);
-
-// stack[0] Long(funcHash)
-// stack[1] Map
-// stack[0] Map
 				size = accessorGenerator.generateDataAccessor(funcHash,
 						funcLocation, funcHashCounterMap.get(funcHash), mv);
 				size = Math.max(size + 3, 5);
-// stack[0] IZ
-// stack[0] Long(funcHash)
-// stack[1] Map
-// stack[0] Map
-// debug. debugF (mv, "beforemaa");
 				mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
 						InstrSupport.DATAFIELD_MAP_ClassName,
 						"put",
 						"(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
 						false);
-// debug. debugF (mv,
-//				"afterwar"):
 				mv.visitInsn(Opcodes.POP);
-// stack[0] Map
 			}
 			mv.visitInsn(Opcodes.DUP);
-//				stack[1] Map
-// stack[0] Map
 			mv.visitFieldInsn(Opcodes.PUTSTATIC, className,
 					InstrSupport.DATAFIELD_NAME, InstrSupport.DATAFIELD_MAP_DESC);
-// stack[0] Map
-			return Math.max(size, 2); // Maximum local stack size is 2
+			return Math.max(size, 2); // Maximum local stack size  2
 		}
 
 }

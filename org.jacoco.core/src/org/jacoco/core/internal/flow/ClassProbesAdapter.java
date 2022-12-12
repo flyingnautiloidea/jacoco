@@ -16,8 +16,8 @@ import org.jacoco.core.internal.instr.InstrSupport;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.AnalyzerAdapter;
-import org.jacoco.core.diffhelper.DiffHelper;
-import org.jacoco.core. tools. javaByteFunctionMap;
+import org.jacoco.core.diffTools.DiffTool;
+import org.jacoco.core. tools. javaByteFuncMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class ClassProbesAdapter extends ClassVisitor
 
 	private final Map<String, Long> funcHashMap;
 	private final Map<Long, Integer> funcHashCounterMap;
-	javaByteFunctionMap jbf = new javaByteFunctionMap() ;
+	javaByteFuncMap jbf = new javaByteFuncMap() ;
 
 	/**
 	 * Creates a new adapter that delegates to the given visitor.
@@ -81,13 +81,9 @@ public class ClassProbesAdapter extends ClassVisitor
 		final MethodProbesVisitor mv = cv.visitMethod(access, name, desc,
 				signature, exceptions);
 
-		DiffHelper helper = new DiffHelper();
+		DiffTool helper = new DiffTool();
 		if(helper.isDiffFileExists()){
-			if (mv != null && helper.isDiffMethod(this.name, name, desc)) {
-				methodProbes = mv;
-			} else {
-				methodProbes = EMPTY_METHOD_PROBES_VISITOR;
-			}
+			methodProbes = (mv != null && helper.isDiffMethod(this.name, name, desc)) ? mv : EMPTY_METHOD_PROBES_VISITOR ;
 		}else if (mv == null) {
 			// We need to visit the method in any case, otherwise probe ids
 			// are not reproducible
@@ -129,8 +125,6 @@ public class ClassProbesAdapter extends ClassVisitor
 		Integer currentCount = funcHashCounterMap.get(funcHash);
 		if (currentCount == null) {
 			currentCount = 0;
-		}else {
-
 		}
 		funcHashCounterMap. put(funcHash, currentCount + 1) ;
 		return currentCount;

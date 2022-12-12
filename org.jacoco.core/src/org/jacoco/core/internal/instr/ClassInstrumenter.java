@@ -14,7 +14,7 @@ package org.jacoco.core.internal.instr;
 
 import org.jacoco.core.internal.flow.ClassProbesVisitor;
 import org.jacoco.core.internal.flow.MethodProbesVisitor;
-import org.jacoco.core.tools.javaByteFunctionMap;
+import org.jacoco.core.tools.javaByteFuncMap;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
@@ -31,7 +31,7 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 
 	private String className;
 	private final Map<String,Long> funcHashMap ;
-	javaByteFunctionMap jbf = new javaByteFunctionMap();
+	javaByteFuncMap jbf = new javaByteFuncMap();
 
 	/**
 	 * Emits a instrumented version of this class to the given class visitor.
@@ -76,10 +76,10 @@ public class ClassInstrumenter extends ClassProbesVisitor {
 		String funcHashkey = jbf.keyBuilderForQuery(className, name, desc);
 		Long funcHash = funcHashMap. get (funcHashkey);
 		if (funcHash == null) {
-			System.out.println(" (((((((((((classname:" + className +
-					"))))))))))))methodName::::"
-							+ name + "(((((((key:"
-							+ funcHashkey + "((((((hash:" + funcHash);
+			System.out.println(" classname::::" + className +
+					"methodName::::"
+							+ name + "key::::"
+							+ funcHashkey + "hash::::" + funcHash);
 		}
 
 		if (mv == null) {

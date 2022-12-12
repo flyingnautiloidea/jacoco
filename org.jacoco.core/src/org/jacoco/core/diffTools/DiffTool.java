@@ -11,26 +11,26 @@
  *
  *******************************************************************************/
 
-package org.jacoco.core.diffhelper;
+package org.jacoco.core.diffTools;
 
-import java.lang. reflect. Field;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-public class DiffHelper {
-    private static final String diffFilePath = new String(" initvalue");
-    private final HashMap<String, ArrayList> classMethods = getclassMethodsMapper(diffFilePath);
+import java.lang. reflect. Field;
+import java.security.MessageDigest;
+
+public class DiffTool {
+    private static final String theDiffFilePath = new String(" initvalue");
+    private final HashMap<String, ArrayList> classMethods = getclassMethodsMapper(theDiffFilePath);
 
     public boolean isDiffFileExists() {
-        if (diffFilePath == null || diffFilePath.equals("initvalue") || diffFilePath.equals("") || this.classMethods.isEmpty()) {
+        if (theDiffFilePath == null || theDiffFilePath.equals("initvalue") || theDiffFilePath.equals("") || this.classMethods.isEmpty()) {
             return false;
         }
         return true;
     }
-
     public String getDiffFile() {
-        return diffFilePath;
+        return theDiffFilePath;
     }
 
     public static HashMap<String, ArrayList> getclassMethodsMapper(String file) {
@@ -38,14 +38,14 @@ public class DiffHelper {
         if (file == null || file.equals("initvalue") || file.equals("")) {
             return diffMap;
         }
-        String[] classlist = file.split("%");
-        for (int i = 0; i < classlist.length; i++) {
-            if (!classlist[i].contains(":")) {
+        String[] classArray = file.split("%");
+        for (int i = 0; i < classArray.length; i++) {
+            if (!classArray[i].contains(":")) {
                 continue;
             }
-            String[] tmps = classlist[i].split(":");
-            String classname = tmps[0];
-            String methodstr = tmps[1];
+            String[] methodInfors = classArray[i].split(":");
+            String classname = methodInfors[0];
+            String methodstr = methodInfors[1];
             ArrayList<String> list = new ArrayList<String>(
                     Arrays.asList(methodstr.split("#")));
             diffMap.put(classname, list);
@@ -57,11 +57,10 @@ public class DiffHelper {
     public boolean isDiffMethod(String className, String methodName, String methodDesc) {
         for (String key : this.classMethods.keySet()) {
             if (key.endsWith(className)) {
-                ArrayList<String> methodList = this.classMethods.get(key);
-                if (((String) methodList.get(0)).equals("true")) {
+                ArrayList<String> methodArray = this.classMethods.get(key);
+                if (((String) methodArray.get(0)).equals("true")) {
                     return true;
                 }
-
                 String[] paramArr = methodDesc.split("\\)")[0].split(";");
                 StringBuilder builder = new StringBuilder(methodName);
                 for (String param : paramArr) {
@@ -70,12 +69,11 @@ public class DiffHelper {
                         builder.append("," + tt[tt.length - 1]);
                     }
                 }
-                for (String method : methodList) {
+                for (String method : methodArray) {
                     if (method.equals(builder.toString())) {
                         return true;
                     }
                 }
-
             }
         }
         return false ;
@@ -86,26 +84,26 @@ public class DiffHelper {
 
     public static void modify(String fieldName, Object newFieldValue)
             throws Exception {
-        if (!diffFilePath.equals("initvalue")) {
+        if (!theDiffFilePath.equals("initvalue")) {
             return;
         }
-        Class<?> clazz = Class.forName("org.jacoco.cli.internal.core.diffhelper.DiffHelper");
-        DiffHelper helper = (DiffHelper) clazz.newInstance();
-        Field field = helper.getClass().getDeclaredField(fieldName);
+        Class<?> clazz = Class.forName("org.jacoco.cli.internal.core.diffTools.DiffTool");
+        DiffTool diffTool = (DiffTool) clazz.newInstance();
+        Field field = diffTool.getClass().getDeclaredField(fieldName);
         Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & 0xFFFFFFEf);
         if (!field.isAccessible()) {
             field.setAccessible(true);
         }
-        field.set(helper, newFieldValue);
+        field.set(diffTool, newFieldValue);
     }
 
     public static String getMD5Value(String dataStr){
         try{
-            MessageDigest m = MessageDigest.getInstance("MD5");
-            m.update (dataStr. getBytes ("UTF8")) ;
-            byte[] s = m.digest();
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update (dataStr. getBytes ("UTF8")) ;
+            byte[] s = messageDigest.digest();
             String result = "" ;
             for (int i = 0; i < s.length; i++) {
                 result = result + Integer.toHexString(0xFF & s[i] | 0xFFFFFF00).substring(6);

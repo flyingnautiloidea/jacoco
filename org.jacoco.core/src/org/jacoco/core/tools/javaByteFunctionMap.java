@@ -1,22 +1,23 @@
 package org.jacoco.core.tools;
-import org. apache.bcel.classfile.ClassParser;
-import org. apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.jacoco.core.data. ExecutionData;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core. internal.data. CRC64;
-import org. objectweb.asm.MethodVisitor;
+
 import java. io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import static org. objectweb.asm.Opcodes.*;
-import com.alibaba. fastjson.JSONObject;
+import org. apache.bcel.classfile.ClassParser;
+import org. apache.bcel.classfile.Code;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Method;
+import org.jacoco.core.data.ExecutionData;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.internal.data. CRC64;
+import org. objectweb.asm.MethodVisitor;
+import static org.objectweb.asm.Opcodes.*;
+import com.alibaba.fastjson.JSONObject;
 
-public class javaByteFunctionMap {
-    private String keySpliter = "-$k$y$-";
+public class javaByteFuncMap {
+    private String theKeySpliter = "-$j$k$-";
 
     public Map<String, String> extract(final byte[] source) {
         Map<String, String> funcHash = new HashMap<String, String>();
@@ -31,7 +32,7 @@ public class javaByteFunctionMap {
             final ClassParser parser = new ClassParser(sbs, className);
             final JavaClass clazz = parser.parse();
 
-            String own = clazz.getClassName();
+            String theClassName = clazz.getClassName();
             Method[] methods = clazz.getMethods();
             int methodSize = methods.length;
             for (int methodCount = 0; methodCount < methodSize; methodCount++) {
@@ -41,13 +42,7 @@ public class javaByteFunctionMap {
                 Code code = currentMethod.getCode();
                 String methodkey = keyBuilderForQuery(className, methodName,
                         methodSignature);
-
-                String codeString = new String();
-                if (code == null) {
-                    codeString = methodkey;
-                } else {
-                    codeString = codeWithoutConstantpoolIndex(code.toString()) + methodkey;
-                }
+                String codeString = (code == null ? methodkey : codeWithoutConstantpoolIndex(code.toString()) + methodkey) ;
                 final long classId = CRC64.classId(codeString.getBytes());
                 long methodValue = classId;
                 funcHash.put(methodkey, methodValue);
@@ -61,11 +56,11 @@ public class javaByteFunctionMap {
 
     public String keyBuilderForQuery(String owner, String name, String desc) {
         return owner.replace("/",
-                ",") + keySpliter + name + keySpliter + desc;
+                ",") + theKeySpliter + name + theKeySpliter + desc;
     }
 
-    public String codeWithoutConstantpoolIndex(String originCodeString) {
-        return originCodeString.replaceAll("\\(\\d*\\s*\\,*\\s*\\d*\\)", "()");
+    public String codeWithoutConstantpoolIndex(String originCodeStr) {
+        return originCodeStr.replaceAll("\\(\\d*\\s*\\,*\\s*\\d*\\)", "()");
     }
 
 
@@ -78,13 +73,11 @@ public class javaByteFunctionMap {
             }
         } else {
             final InputStream in = new FileInputStream(crrentFile);
+            //    to rebuild  class probes
             try {
-//                    rebuild the class probes
-
                 final ClassParser parser = new ClassParser(in,
                         crrentFile.getName());
                 final JavaClass clazz = parser.parse();
-// JavaClass clazz = Repository. lookupClass("*);
                 String className = clazz.getClassName();
                 Long classId = CRC64.classId(clazz.getBytes());
                 boolean[] classProbe = new boolean[0];
@@ -97,27 +90,18 @@ public class javaByteFunctionMap {
                     String methodkey = keyBuilderForQuery(className, methodName,
                             methodSignature);
                     Code code = currentMethod.getCode();
-                    String codeString = new String();
-                    if (code == null) {
-                        codeString = methodkey;
-                    } else {
-                        codeString = codeWithoutConstantpoolIndex(
-                                code.toString()) + methodkey;
-                    }
-
+                    String codeString = (code == null ? methodkey : codeWithoutConstantpoolIndex(code.toString()) + methodkey) ;
                     /**
-                     * methodId gen
+                     * to generate the methodId
                      */
                     long methodId = CRC64.classId(codeString.getBytes());
                     ExecutionData methodExecutionData = methodData.get(methodId);
                     if (methodExecutionData == null) {
                         return;
                     }
-
                     boolean[] methodProb = methodExecutionData.getProbes();
                     classProbe = mergeBooleanArray(classProbe, methodProb);
                 }
-
                 ExecutionData classExecutionData = new ExecutionData(classId, className, classProbe);
                 classData.put(classExecutionData);
             } finally {
@@ -132,12 +116,7 @@ public class javaByteFunctionMap {
         int newLen = frontLen + backLen;
         boolean[] newBooleanArray = new boolean[newLen];
         for (int booleanCounter = 0; booleanCounter < newLen; booleanCounter++) {
-            if (booleanCounter < frontLen) {
-                newBooleanArray[booleanCounter] = front[booleanCounter];
-            } else {
-                newBooleanArray[booleanCounter] = back[booleanCounter
-                        - frontLen];
-            }
+            newBooleanArray[booleanCounter] = (booleanCounter < frontLen ? front[booleanCounter] : back[booleanCounter - frontLen]) ;
         }
         return newBooleanArray;
     }
@@ -147,10 +126,10 @@ public class javaByteFunctionMap {
                 "java/lang/System", "out",
                 "Ljava/io/PrintStream;");
 
-// stack[0] PrintStream
+        // stack[0] PrintStream
+        // stack[1] string
+        // stack[0] PrintStream
         methodVisitorM.visitLdcInsn(infor);
-// stack[1] string
-// stack[0] PrintStream
         methodVisitorM.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
     }
 
@@ -183,10 +162,9 @@ public class javaByteFunctionMap {
     Collection<ExecutionData> dataBefore) {
         JSONObject computeContainer = new JSONObject();
         for (ExecutionData data : dataBefore) {
-            String currentClassName = data.getName().split("-\\$k\\$y\\$-")[0];
+            String currentClassName = data.getName().split("-\\$j\\$k\\$-")[0];
             JSONObject classData = (JSONObject) computeContainer.get(currentClassName);
             if (classData == null) {
-
                 JSONObject dataContainer = new JSONObject();
                 Collection<ExecutionData> methodArray = new ArrayList<ExecutionData>();
                 methodArray.add(data);
@@ -205,7 +183,7 @@ public class javaByteFunctionMap {
                             .put("currentProbeTag",
                                     true);
                 } else {
-                    //                if no hits , do nothing
+                    // do nothing
                 }
             }
         }

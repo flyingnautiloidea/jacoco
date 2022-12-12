@@ -16,7 +16,7 @@ import org.jacoco.core.runtime.IExecutionDataAccessorGenerator;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org. jacoco.core.tools.javaByteFunctionMap;
+import org. jacoco.core.tools.javaByteFuncMap;
 import java. util.Map;
 
 /**
@@ -48,7 +48,7 @@ class LocalProbeArrayStrategy implements IProbeArrayStrategy {
 	public int storeInstance(final MethodVisitor mv, final boolean clinit,
 			final int variable, final Long funcHashP0) {
 		if (funcHashP0 == null) {
-			System.out.println("~~~ERROR");
+			System.out.println("ERROR happened");
 		}
 //		final int maxStack = accessorGenerator.generateDataAccessor(classId,
 //				className, probeCount, mv);
@@ -61,10 +61,7 @@ class LocalProbeArrayStrategy implements IProbeArrayStrategy {
 
 		for (long funcHash : funcHashCounterMap.keySet()) {
 			mv.visitInsn(Opcodes.DUP);
-// stack[1] Map
-// stack[0] Map
-// get funcName
-			String funcLocation = "KY_FUNC_LOCATION_INVALID";
+			String funcLocation = "JK_FUNC_LOCATION_INVALID";
 			for (String funcx : funcHashMap.keySet()) {
 				if (funcHash == ((Long) funcHashMap.get(funcx)).longValue()) {
 					funcLocation = funcx;
@@ -73,36 +70,17 @@ class LocalProbeArrayStrategy implements IProbeArrayStrategy {
 			}
 			mv.visitTypeInsn(Opcodes.NEW, "java/lang/Long");
 			mv.visitInsn(Opcodes.DUP);
-// stack(1] Long
-//				stack[0] Long
-// stack[1] Map
-// stack[0] Map
 			mv.visitLdcInsn(Long.valueOf(funcHash));
-// stack[2] funcHash
-/// stack[1] Long
-// stack[0] Long
-// stack[1] Map
-// stack[0] Map
 			mv.visitMethodInsn(Opcodes.INVOKESPECIAL,
 					"java/lang/Long",
 					"<init>",
 					"(J)V",
 					false);
-
-//						stack[0] Long(funcHash)
-// stack[1] Map
-// stack[0] Map
-
 			size = accessorGenerator.generateDataAccessor(funcHash,
 					funcLocation, funcHashCounterMap.get(funcHash),
 					mv);
 			size = Math.max(size
 					+ 3, 5);
-//				stack[0] IZ
-//				stack[0] Long(funcHash)
-//				stack[1] Map
-//				stack[0] Map
-
 			mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, InstrSupport.DATAFIELD_MAP_ClassName, "put",
 					"(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object", false);
 			mv.visitInsn(Opcodes.POP);
@@ -123,7 +101,6 @@ class LocalProbeArrayStrategy implements IProbeArrayStrategy {
 	}
 
 	public void addMembers(final ClassVisitor delegate, final int probeCount , final Map funcHashCounerMap , final Map funcHashMap) {
-		// nothing to do
 	}
 
 }

@@ -140,7 +140,6 @@ public class ClassAnalyzer extends ClassProbesVisitor
 
 	@Override
 	public void visitTotalProbeCount(final int count ,final Map funcHashCounterMap , final Map funcHashMap) {
-		// nothing to do
 	}
 
 	// IFilterContext implementation

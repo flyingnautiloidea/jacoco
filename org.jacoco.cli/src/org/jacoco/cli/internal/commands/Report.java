@@ -17,10 +17,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.jacoco.core.diffhelper.DiffHelper;
+import java.util.ArrayList;
+import org.jacoco.core.diffTools.DiffTool;
 
 import org.jacoco.cli.internal.Command;
 import org.jacoco.core.analysis.Analyzer;
@@ -52,11 +52,11 @@ public class Report extends Command {
 	@Option(name = "--classfiles", usage = "location of Java class files", metaVar = "<path>", required = true)
 	List<File> classfiles = new ArrayList<File>();
 
-	@Option(name = "--diffFile", usage = "input file for diff", metaVar =  "<file>")
-	String diffFile;
-
 	@Option(name = "--sourcefiles", usage = "location of the source files", metaVar = "<path>")
 	List<File> sourcefiles = new ArrayList<File>();
+
+	@Option(name = "--diffFile", usage = "input file for diff", metaVar =  "<file>")
+	String diffFile;
 
 	@Option(name = "--tabwith", usage = "tab stop width for the source pages (default 4)", metaVar = "<n>")
 	int tabwidth = 4;
@@ -86,8 +86,8 @@ public class Report extends Command {
 			throws IOException {
 		try {
 			if (this.diffFile != null) {
-				DiffHelper.modify("diffFilePath", this.diffFile);
-				DiffHelper diffHelper = new DiffHelper();
+				DiffTool.modify("diffFilePath", this.diffFile);
+				DiffTool diffTool = new DiffTool();
 			}
 		} catch (Exception e) {e.printStackTrace();}
 

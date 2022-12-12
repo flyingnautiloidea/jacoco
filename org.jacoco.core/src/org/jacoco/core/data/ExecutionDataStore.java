@@ -11,7 +11,7 @@
  *
  *******************************************************************************/
 package org.jacoco.core.data;
-import org.jacoco.core. tools.javaByteFunctionMap;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.jacoco.core.tools.javaByteFuncMap;
 
 /**
  * In-memory data store for execution data. The data can be added through its
@@ -169,7 +170,7 @@ public final class ExecutionDataStore implements IExecutionDataVisitor {
 	 *            interface to write content to
 	 */
 	public void accept(final IExecutionDataVisitor visitor) {
-		javaByteFunctionMap jbfm = new javaByteFunctionMap();
+		javaByteFuncMap jbfm = new javaByteFuncMap();
 		Collection<ExecutionData> afterClassHitsFilter = jbfm.filterValidClassExec(getContents());
 		for (final ExecutionData data : afterClassHitsFilter){
 			visitor.visitClassExecution(data);

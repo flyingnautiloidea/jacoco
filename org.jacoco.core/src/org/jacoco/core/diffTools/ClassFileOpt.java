@@ -10,21 +10,21 @@
  *    Marc R. Hoffmann - initial API and implementation
  *
  *******************************************************************************/
-package org.jacoco.core.diffhelper;
+package org.jacoco.core.diffTools;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio. charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
-public class fileOperator {
+
+public class ClassFileOpt {
     public String readFile(String path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
@@ -36,7 +36,7 @@ public class fileOperator {
         }
         File classesFile = new File(filePath);
         if (classesFile.isFile()) {
-            fileOperator fo = new fileOperator();
+            ClassFileOpt fo = new ClassFileOpt();
             String includesClassesString = new String();
             try {
                 includesClassesString = fo.readFile(filePath, StandardCharsets.UTF_8);

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 
-import org.jacoco.core.diffhelper.fileOperator;
+import org.jacoco.core.diffTools.ClassFileOpt;
 
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
@@ -45,8 +45,8 @@ public class Main extends Command {
 	private final String[] args;
 
 	Main(final String... args) {
-		fileOperator fo = new fileOperator();
-		this.args = fo.assembleFinalArgs(args);
+		ClassFileOpt fileOpt = new ClassFileOpt();
+		this.args = fileOpt.assembleFinalArgs(args);
 	}
 
 	@Argument(handler = CommandHandler.class, required = true)

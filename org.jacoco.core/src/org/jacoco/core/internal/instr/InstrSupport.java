@@ -92,7 +92,6 @@ public final class InstrSupport {
 	/**
 	 * Descriptor of the initialization method.
 	 */
-//	public static final String INITMETHOD_DESC = "()[Z";
 	public static final String INITMETHOD_DESC="()Ljava/util/HashMap;";
 	public static final String INITMETHOD_DESC_QUERYMAP="(Ljava/Lang/Long;)[Z";
 

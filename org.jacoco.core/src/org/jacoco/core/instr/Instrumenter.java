@@ -42,7 +42,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.jacoco.core.tools.javaByteFunctionMap;
+import org.jacoco.core.tools.javaByteFuncMap;
 
 /**
  * Several APIs to instrument Java class definitions for coverage tracing.
@@ -111,8 +111,7 @@ public class Instrumenter {
 	public byte[] instrument(final byte[] buffer, final String name)
 			throws IOException {
 		try {
-//			return instrument(buffer);
-			javaByteFunctionMap fbfm = new javaByteFunctionMap();
+			javaByteFuncMap fbfm = new javaByteFuncMap();
 			Map<String, Long> funcHashMap = fbfm.genClassFuncMapFromBufferAndName(buffer,name);
 			return instrument(buffer , funcHashMap);
 		} catch (final RuntimeException e) {

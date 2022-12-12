@@ -16,7 +16,7 @@ import org.jacoco.core.internal.flow.ClassProbesAdapter;
 import org.jacoco.core.runtime.IExecutionDataAccessorGenerator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
-import org.jacoco.core. tools. javaByteFunctionMap;
+import org.jacoco.core. tools. javaByteFuncMap;
 import java.util.Map;
 
 /**
@@ -47,7 +47,7 @@ public final class ProbeArrayStrategyFactory {
 
 		final String className = reader.getClassName();
 		final int version = InstrSupport.getMajorVersion(reader);
-		javaByteFunctionMap jbm = new javaByteFunctionMap() ;
+		javaByteFuncMap jbm = new javaByteFuncMap() ;
 		if (isInterfaceOrModule(reader)) {
 			final ProbeCounter counter = getProbeCounter(reader,funcHashMap);
 			if (jbm.allMethodCounterNotAllZero(counter.getFuncHashCounterMap())==false) {
