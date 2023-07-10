@@ -26,7 +26,7 @@ import org.objectweb.asm.Opcodes;
 class MethodInstrumenter extends MethodProbesVisitor {
 
 	private final IProbeInserter probeInserter;
-	private final Long funcHash ;
+	private final Long funcHash;
 
 	/**
 	 * Create a new instrumenter instance for the given method.
@@ -37,7 +37,7 @@ class MethodInstrumenter extends MethodProbesVisitor {
 	 *            call-back to insert probes where required
 	 */
 	public MethodInstrumenter(final MethodVisitor mv,
-			final IProbeInserter probeInserter,final Long funcHash) {
+			final IProbeInserter probeInserter, final Long funcHash) {
 		super(mv);
 		this.probeInserter = probeInserter;
 		this.funcHash = funcHash;

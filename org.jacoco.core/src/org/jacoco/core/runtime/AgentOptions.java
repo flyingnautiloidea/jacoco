@@ -192,9 +192,9 @@ public final class AgentOptions {
 	public static final String JMX = "jmx";
 
 	private static final Collection<String> VALID_OPTIONS = Arrays.asList(
-			DESTFILE, APPEND, INCLUDES, INCLUDESFILEPATH, EXCLUDES, EXCLCLASSLOADER,
-			INCLBOOTSTRAPCLASSES, INCLNOLOCATIONCLASSES, SESSIONID, DUMPONEXIT,
-			OUTPUT, ADDRESS, PORT, CLASSDUMPDIR, JMX);
+			DESTFILE, APPEND, INCLUDES, INCLUDESFILEPATH, EXCLUDES,
+			EXCLCLASSLOADER, INCLBOOTSTRAPCLASSES, INCLNOLOCATIONCLASSES,
+			SESSIONID, DUMPONEXIT, OUTPUT, ADDRESS, PORT, CLASSDUMPDIR, JMX);
 
 	private final Map<String, String> options;
 
@@ -232,7 +232,7 @@ public final class AgentOptions {
 
 			ClassFileOpt fo = new ClassFileOpt();
 			String newIncludes = fo.includesString(options);
-			if (newIncludes != null){
+			if (newIncludes != null) {
 				setOption("includes", newIncludes);
 			}
 			validateAll();
@@ -323,19 +323,20 @@ public final class AgentOptions {
 	 */
 	public void setIncludes(final String includes) {
 
-		String newIncludes = includes ;
+		String newIncludes = includes;
 		setOption(INCLUDES, newIncludes);
 
 	}
 
-	public String getIncludesFilePath(){
-			return getOption(INCLUDESFILEPATH,
-"");
+	public String getIncludesFilePath() {
+		return getOption(INCLUDESFILEPATH, "");
 	}
+
 	public void setIncludesFilepath(final String includesFilepath)
 			throws Exception {
 		setOption(INCLUDESFILEPATH, includesFilepath);
 	}
+
 	/**
 	 * Returns the wildcard expression for classes to exclude.
 	 *

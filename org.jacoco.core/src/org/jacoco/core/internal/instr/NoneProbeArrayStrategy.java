@@ -23,11 +23,12 @@ import java.util.Map;
 class NoneProbeArrayStrategy implements IProbeArrayStrategy {
 
 	public int storeInstance(final MethodVisitor mv, final boolean clinit,
-			final int variable , final Long funcHash) {
+			final int variable, final Long funcHash) {
 		throw new UnsupportedOperationException();
 	}
 
-	public void addMembers(final ClassVisitor delegate, final int probeCount , final Map funcHashCounterMap , final Map funcHashMap) {
+	public void addMembers(final ClassVisitor delegate, final int probeCount,
+			final Map funcHashCounterMap, final Map funcHashMap) {
 		// nothing to do
 	}
 

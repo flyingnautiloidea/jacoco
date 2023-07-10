@@ -29,12 +29,11 @@ class ProbeCounter extends ClassProbesVisitor {
 	private Map funcHashCounterMap;
 	private Map funcHashMap;
 
-
 	ProbeCounter() {
 		count = 0;
 		methods = false;
-		funcHashCounterMap = new HashMap<Long,Integer>();
-		funcHashMap =  new HashMap<String , Long>();
+		funcHashCounterMap = new HashMap<Long, Integer>();
+		funcHashMap = new HashMap<String, Long>();
 	}
 
 	@Override
@@ -49,9 +48,10 @@ class ProbeCounter extends ClassProbesVisitor {
 	}
 
 	@Override
-	public void visitTotalProbeCount(final int count,final Map funcHashCounterMap , final Map funcHashMap) {
+	public void visitTotalProbeCount(final int count,
+			final Map funcHashCounterMap, final Map funcHashMap) {
 		this.count = count;
-		this.funcHashCounterMap = funcHashCounterMap ;
+		this.funcHashCounterMap = funcHashCounterMap;
 		this.funcHashMap = funcHashMap;
 	}
 
@@ -59,10 +59,11 @@ class ProbeCounter extends ClassProbesVisitor {
 		return count;
 	}
 
-	Map getFuncHashCounterMap(){
+	Map getFuncHashCounterMap() {
 		return funcHashCounterMap;
 	}
-	Map getFuncHashMap(){
+
+	Map getFuncHashMap() {
 		return funcHashMap;
 	}
 

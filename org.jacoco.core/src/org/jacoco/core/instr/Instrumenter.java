@@ -38,10 +38,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-import java.io.*;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 import org.jacoco.core.tools.javaByteFuncMap;
 
 /**
@@ -77,7 +75,8 @@ public class Instrumenter {
 		signatureRemover.setActive(flag);
 	}
 
-	private byte[] instrument(final byte[] source , final Map<String,Long> funcHashMap) {
+	private byte[] instrument(final byte[] source,
+			final Map<String, Long> funcHashMap) {
 		final long classId = CRC64.classId(source);
 		final ClassReader reader = InstrSupport.classReaderFor(source);
 		final ClassWriter writer = new ClassWriter(reader, 0) {
@@ -88,10 +87,10 @@ public class Instrumenter {
 			}
 		};
 		final IProbeArrayStrategy strategy = ProbeArrayStrategyFactory
-				.createFor(classId, reader, accessorGenerator,funcHashMap);
+				.createFor(classId, reader, accessorGenerator, funcHashMap);
 		final int version = InstrSupport.getMajorVersion(reader);
 		final ClassVisitor visitor = new ClassProbesAdapter(
-				new ClassInstrumenter(strategy, writer ,funcHashMap),
+				new ClassInstrumenter(strategy, writer, funcHashMap),
 				InstrSupport.needsFrames(version), funcHashMap);
 		reader.accept(visitor, ClassReader.EXPAND_FRAMES);
 		return writer.toByteArray();
@@ -112,8 +111,9 @@ public class Instrumenter {
 			throws IOException {
 		try {
 			javaByteFuncMap fbfm = new javaByteFuncMap();
-			Map<String, Long> funcHashMap = fbfm.genClassFuncMapFromBufferAndName(buffer,name);
-			return instrument(buffer , funcHashMap);
+			Map<String, Long> funcHashMap = fbfm
+					.genClassFuncMapFromBufferAndName(buffer, name);
+			return instrument(buffer, funcHashMap);
 		} catch (final RuntimeException e) {
 			throw instrumentError(name, e);
 		}

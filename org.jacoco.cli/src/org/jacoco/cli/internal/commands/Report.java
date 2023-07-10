@@ -55,7 +55,7 @@ public class Report extends Command {
 	@Option(name = "--sourcefiles", usage = "location of the source files", metaVar = "<path>")
 	List<File> sourcefiles = new ArrayList<File>();
 
-	@Option(name = "--diffFile", usage = "input file for diff", metaVar =  "<file>")
+	@Option(name = "--diffFile", usage = "input file for diff", metaVar = "<file>")
 	String diffFile;
 
 	@Option(name = "--tabwith", usage = "tab stop width for the source pages (default 4)", metaVar = "<n>")
@@ -89,7 +89,9 @@ public class Report extends Command {
 				DiffTool.modify("diffFilePath", this.diffFile);
 				DiffTool diffTool = new DiffTool();
 			}
-		} catch (Exception e) {e.printStackTrace();}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		final ExecFileLoader loader = loadExecutionData(out);
 		final IBundleCoverage bundle = analyze(loader.getExecutionDataStore(),
@@ -105,7 +107,7 @@ public class Report extends Command {
 			out.println("[WARN] No execution data files provided.");
 		} else {
 			for (final File file : execfiles) {
-				if (!file.getName (). contains (". exec")) {
+				if (!file.getName().contains(". exec")) {
 					continue;
 				}
 				out.printf("[INFO] Loading execution data file %s.%n",

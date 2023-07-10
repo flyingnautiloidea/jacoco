@@ -34,7 +34,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 	private AnalyzerAdapter analyzer;
 
 	private final Map<Label, Label> tryCatchProbeLabels;
-	private final Long funcHash ;
+	private final Long funcHash;
 
 	/**
 	 * Create a new adapter instance.
@@ -45,7 +45,7 @@ public final class MethodProbesAdapter extends MethodVisitor {
 	 *            generator for unique probe ids
 	 */
 	public MethodProbesAdapter(final MethodProbesVisitor probesVisitor,
-			final IProbeIdGenerator idGenerator , final Long funcHash) {
+			final IProbeIdGenerator idGenerator, final Long funcHash) {
 		super(InstrSupport.ASM_API_VERSION, probesVisitor);
 		this.probesVisitor = probesVisitor;
 		this.idGenerator = idGenerator;
@@ -106,7 +106,8 @@ public final class MethodProbesAdapter extends MethodVisitor {
 		case Opcodes.ARETURN:
 		case Opcodes.RETURN:
 		case Opcodes.ATHROW:
-			probesVisitor.visitInsnWithProbe(opcode, idGenerator.nextId(funcHash));
+			probesVisitor.visitInsnWithProbe(opcode,
+					idGenerator.nextId(funcHash));
 			break;
 		default:
 			probesVisitor.visitInsn(opcode);

@@ -17,7 +17,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.commons.AnalyzerAdapter;
 import org.jacoco.core.diffTools.DiffTool;
-import org.jacoco.core. tools. javaByteFuncMap;
+import org.jacoco.core.tools.javaByteFuncMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class ClassProbesAdapter extends ClassVisitor
 
 	private final Map<String, Long> funcHashMap;
 	private final Map<Long, Integer> funcHashCounterMap;
-	javaByteFuncMap jbf = new javaByteFuncMap() ;
+	javaByteFuncMap jbf = new javaByteFuncMap();
 
 	/**
 	 * Creates a new adapter that delegates to the given visitor.
@@ -52,12 +52,12 @@ public class ClassProbesAdapter extends ClassVisitor
 	 *            if <code>true</code> stackmap frames are tracked and provided
 	 */
 	public ClassProbesAdapter(final ClassProbesVisitor cv,
-			final boolean trackFrames , final Map funcHashMap) {
+			final boolean trackFrames, final Map funcHashMap) {
 		super(InstrSupport.ASM_API_VERSION, cv);
 		this.cv = cv;
 		this.trackFrames = trackFrames;
-		this.funcHashMap = funcHashMap ;
-		this.funcHashCounterMap = new HashMap<Long , Integer>();
+		this.funcHashMap = funcHashMap;
+		this.funcHashCounterMap = new HashMap<Long, Integer>();
 	}
 
 	@Override
@@ -74,17 +74,18 @@ public class ClassProbesAdapter extends ClassVisitor
 			final String[] exceptions) {
 
 		String funcHashKey = jbf.keyBuilderForQuery(this.name, name, desc);
-		final Long funcHash=
-				(Long) this. funcHashMap.get(funcHashKey);
+		final Long funcHash = (Long) this.funcHashMap.get(funcHashKey);
 
 		final MethodProbesVisitor methodProbes;
 		final MethodProbesVisitor mv = cv.visitMethod(access, name, desc,
 				signature, exceptions);
 
 		DiffTool helper = new DiffTool();
-		if(helper.isDiffFileExists()){
-			methodProbes = (mv != null && helper.isDiffMethod(this.name, name, desc)) ? mv : EMPTY_METHOD_PROBES_VISITOR ;
-		}else if (mv == null) {
+		if (helper.isDiffFileExists()) {
+			methodProbes = (mv != null
+					&& helper.isDiffMethod(this.name, name, desc)) ? mv
+							: EMPTY_METHOD_PROBES_VISITOR;
+		} else if (mv == null) {
 			// We need to visit the method in any case, otherwise probe ids
 			// are not reproducible
 			methodProbes = EMPTY_METHOD_PROBES_VISITOR;
@@ -99,7 +100,7 @@ public class ClassProbesAdapter extends ClassVisitor
 				super.visitEnd();
 				LabelFlowAnalyzer.markLabels(this);
 				final MethodProbesAdapter probesAdapter = new MethodProbesAdapter(
-						methodProbes, ClassProbesAdapter.this , funcHash);
+						methodProbes, ClassProbesAdapter.this, funcHash);
 				if (trackFrames) {
 					final AnalyzerAdapter analyzer = new AnalyzerAdapter(
 							ClassProbesAdapter.this.name, access, name, desc,
@@ -115,7 +116,7 @@ public class ClassProbesAdapter extends ClassVisitor
 
 	@Override
 	public void visitEnd() {
-		cv.visitTotalProbeCount(counter , funcHashCounterMap ,funcHashMap);
+		cv.visitTotalProbeCount(counter, funcHashCounterMap, funcHashMap);
 		super.visitEnd();
 	}
 
@@ -126,7 +127,7 @@ public class ClassProbesAdapter extends ClassVisitor
 		if (currentCount == null) {
 			currentCount = 0;
 		}
-		funcHashCounterMap. put(funcHash, currentCount + 1) ;
+		funcHashCounterMap.put(funcHash, currentCount + 1);
 		return currentCount;
 	}
 

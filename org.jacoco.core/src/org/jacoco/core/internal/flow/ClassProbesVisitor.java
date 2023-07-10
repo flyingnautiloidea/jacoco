@@ -56,6 +56,7 @@ public abstract class ClassProbesVisitor extends ClassVisitor {
 	 * @param count
 	 *            total number of probes
 	 */
-	public abstract void visitTotalProbeCount(int count , Map funcHashCounterMap , Map funcHashMap);
+	public abstract void visitTotalProbeCount(int count, Map funcHashCounterMap,
+			Map funcHashMap);
 
 }

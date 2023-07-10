@@ -14,7 +14,8 @@ package org.jacoco.core.internal.instr;
 
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
-import java.util.Map ;
+import java.util.Map;
+
 /**
  * Strategies to retrieve the probe array instance for each method within a
  * type. This abstraction is required as we need to follow a different strategy
@@ -33,7 +34,8 @@ public interface IProbeArrayStrategy {
 	 *            variable index to store probe array to
 	 * @return maximum stack size required by the generated code
 	 */
-	int storeInstance(MethodVisitor mv, boolean clinit, int variable , Long funcHash);
+	int storeInstance(MethodVisitor mv, boolean clinit, int variable,
+			Long funcHash);
 
 	/**
 	 * Adds additional class members required by this strategy. This method is
@@ -44,6 +46,7 @@ public interface IProbeArrayStrategy {
 	 * @param probeCount
 	 *            total number of probes required for this class
 	 */
-	void addMembers(ClassVisitor cv, int probeCount , Map funcHashCounterMap ,Map funcHashMap);
+	void addMembers(ClassVisitor cv, int probeCount, Map funcHashCounterMap,
+			Map funcHashMap);
 
 }

@@ -98,10 +98,10 @@ public class ExecutionDataWriter
 	}
 
 	public void visitClassExecution(final ExecutionData data) {
-		try{
+		try {
 			out.writeByte(BLOCK_EXECUTIONDATA);
 			out.writeLong(data.getId());
-			out.writeUTF (data.getName ()) ;
+			out.writeUTF(data.getName());
 			out.writeBooleanArray(data.getProbes());
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

@@ -45,6 +45,7 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	private int accessorStackSize;
 
 	private final Long funcHash;
+
 	/**
 	 * Creates a new {@link ProbeInserter}.
 	 *
@@ -61,11 +62,12 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	 *            the probe array
 	 */
 	ProbeInserter(final int access, final String name, final String desc,
-			final MethodVisitor mv, final IProbeArrayStrategy arrayStrategy,final Long funcHash) {
+			final MethodVisitor mv, final IProbeArrayStrategy arrayStrategy,
+			final Long funcHash) {
 		super(InstrSupport.ASM_API_VERSION, mv);
 		this.clinit = InstrSupport.CLINIT_NAME.equals(name);
 		this.arrayStrategy = arrayStrategy;
-		this.funcHash = funcHash ;
+		this.funcHash = funcHash;
 		int pos = (Opcodes.ACC_STATIC & access) == 0 ? 1 : 0;
 		for (final Type t : Type.getArgumentTypes(desc)) {
 			pos += t.getSize();
@@ -100,7 +102,8 @@ class ProbeInserter extends MethodVisitor implements IProbeInserter {
 	@Override
 	public void visitCode() {
 		mv.visitLabel(beginLabel);
-		accessorStackSize = arrayStrategy.storeInstance(mv, clinit, variable,funcHash);
+		accessorStackSize = arrayStrategy.storeInstance(mv, clinit, variable,
+				funcHash);
 		mv.visitCode();
 	}
 

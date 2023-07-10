@@ -27,7 +27,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.MethodNode;
 
-import java.util.Map ;
+import java.util.Map;
 
 /**
  * Analyzes the structure of a class.
@@ -139,7 +139,8 @@ public class ClassAnalyzer extends ClassProbesVisitor
 	}
 
 	@Override
-	public void visitTotalProbeCount(final int count ,final Map funcHashCounterMap , final Map funcHashMap) {
+	public void visitTotalProbeCount(final int count,
+			final Map funcHashCounterMap, final Map funcHashMap) {
 	}
 
 	// IFilterContext implementation
